@@ -1,2 +1,1 @@
-# wmc-contracts
-World Millionaire Challenge Smart Contracts
+# World Millionaire Challenge Smart Contracts

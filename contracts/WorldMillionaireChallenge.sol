@@ -87,6 +87,7 @@ contract WorldMillionaireChallenge is Ownable2Step, Challenge {
         "WMC-DAYS",
         1,
         4,
+        85500, // TODO 23:45 = 24*60*60-15*60 = 85500
         100_000, // TODO
         90, // TODO
         1 * 10 ** 18
@@ -102,6 +103,7 @@ contract WorldMillionaireChallenge is Ownable2Step, Challenge {
             "WMC-DAYS",
             1,
             4,
+            60,
             3,
             3,
             1 * 10 ** 18
@@ -185,6 +187,12 @@ contract WorldMillionaireChallenge is Ownable2Step, Challenge {
 
         // The process was not started.
         if (block.number - proof[day].blkNumber > 255) {
+            if (day != 0) {
+                require(
+                    (block.timestamp - proof[day - 1].blkTime) >= minInterval,
+                    "Too often"
+                );
+            }
             proof[day].day = day;
             proof[day].blkNumber = block.number;
             proof[day].blkTime = block.timestamp;

@@ -1,5 +1,5 @@
 {
-  "name": "wmc-contracts",
+  "name": "@wmc-pro/wmc-contracts",
   "version": "1.0.0",
   "description": "World Millionaire Challenge Smart Contracts",
   "private": true,

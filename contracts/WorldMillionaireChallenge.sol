@@ -189,7 +189,8 @@ contract WorldMillionaireChallenge is Ownable2Step, Challenge {
         if (block.number - proof[day].blkNumber > 255) {
             if (day != 0) {
                 require(
-                    (block.timestamp - proof[day - 1].blkTime) >= minInterval,
+                    (block.timestamp - proof[day - 1].blkTime) >=
+                        data.minInterval,
                     "Too often"
                 );
             }

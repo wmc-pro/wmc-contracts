@@ -624,6 +624,7 @@ abstract contract Challenge is Ownable2Step, DaysToken, ParticipantsStorage {
         uint256 seasonDays;
         uint256 seasonsMinLimit;
         uint256 seasonsMaxLimit;
+        uint256 minInterval;
     }
     ChallengeData public data;
 
@@ -638,6 +639,7 @@ abstract contract Challenge is Ownable2Step, DaysToken, ParticipantsStorage {
     // Events
     event SeasonsMinLimitChanged(uint256 oldValue, uint256 newValue);
     event SeasonsMaxLimitChanged(uint256 oldValue, uint256 newValue);
+    event MinIntervalChanged(uint256 oldValue, uint256 newValue);
     event RequirementChanged(uint256 oldValue, uint256 newValue);
     event ParticipantJoinedtoSeason(
         address indexed participantWallet,
@@ -652,6 +654,7 @@ abstract contract Challenge is Ownable2Step, DaysToken, ParticipantsStorage {
         string memory symbol_,
         uint256 seasonsMinLimit_,
         uint256 seasonsMaxLimit_,
+        uint256 minInterval_,
         uint256 requirement_,
         uint256 seasonDays_,
         uint256 dayPrice_
@@ -661,6 +664,9 @@ abstract contract Challenge is Ownable2Step, DaysToken, ParticipantsStorage {
 
         emit SeasonsMaxLimitChanged(data.seasonsMaxLimit, seasonsMaxLimit_);
         data.seasonsMaxLimit = seasonsMaxLimit_;
+
+        emit MinIntervalChanged(data.minInterval, minInterval_);
+        data.minInterval = minInterval_;
 
         emit RequirementChanged(data.requirement, requirement_);
         data.requirement = requirement_;
@@ -918,6 +924,13 @@ abstract contract Challenge is Ownable2Step, DaysToken, ParticipantsStorage {
 
         emit SeasonsMaxLimitChanged(data.seasonsMaxLimit, newSeasonsMaxLimit);
         data.seasonsMaxLimit = newSeasonsMaxLimit;
+    }
+
+    function setMinInterval(uint256 newMinInterval) external onlyOwner {
+        require(newMinInterval < 24 * 60 * 60, "Wrong interval");
+
+        emit MinIntervalChanged(data.minInterval, newMinInterval);
+        data.minInterval = newMinInterval;
     }
 
     function setRequirement(uint256 newRequirement) external onlyOwner {

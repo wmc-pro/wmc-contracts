@@ -1080,6 +1080,7 @@ abstract contract Challenge is Ownable2Step, DaysToken, ParticipantsStorage {
         uint256 seasonDays;
         uint256 seasonsMinLimit;
         uint256 seasonsMaxLimit;
+        uint256 minInterval;
     }
     ChallengeData public data;
 
@@ -1094,6 +1095,7 @@ abstract contract Challenge is Ownable2Step, DaysToken, ParticipantsStorage {
     // Events
     event SeasonsMinLimitChanged(uint256 oldValue, uint256 newValue);
     event SeasonsMaxLimitChanged(uint256 oldValue, uint256 newValue);
+    event MinIntervalChanged(uint256 oldValue, uint256 newValue);
     event RequirementChanged(uint256 oldValue, uint256 newValue);
     event ParticipantJoinedtoSeason(
         address indexed participantWallet,
@@ -1108,6 +1110,7 @@ abstract contract Challenge is Ownable2Step, DaysToken, ParticipantsStorage {
         string memory symbol_,
         uint256 seasonsMinLimit_,
         uint256 seasonsMaxLimit_,
+        uint256 minInterval_,
         uint256 requirement_,
         uint256 seasonDays_,
         uint256 dayPrice_
@@ -1117,6 +1120,9 @@ abstract contract Challenge is Ownable2Step, DaysToken, ParticipantsStorage {
 
         emit SeasonsMaxLimitChanged(data.seasonsMaxLimit, seasonsMaxLimit_);
         data.seasonsMaxLimit = seasonsMaxLimit_;
+
+        emit MinIntervalChanged(data.minInterval, minInterval_);
+        data.minInterval = minInterval_;
 
         emit RequirementChanged(data.requirement, requirement_);
         data.requirement = requirement_;
@@ -1376,6 +1382,13 @@ abstract contract Challenge is Ownable2Step, DaysToken, ParticipantsStorage {
         data.seasonsMaxLimit = newSeasonsMaxLimit;
     }
 
+    function setMinInterval(uint256 newMinInterval) external onlyOwner {
+        require(newMinInterval < 24 * 60 * 60, "Wrong interval");
+
+        emit MinIntervalChanged(data.minInterval, newMinInterval);
+        data.minInterval = newMinInterval;
+    }
+
     function setRequirement(uint256 newRequirement) external onlyOwner {
         require(
             newRequirement >= _getSeasonParticipantsCount(0),
@@ -1523,6 +1536,7 @@ contract WorldMillionaireChallenge is Ownable2Step, Challenge {
         "WMC-DAYS",
         1,
         4,
+        85500, // TODO 23:45 = 24*60*60-15*60 = 85500
         100_000, // TODO
         90, // TODO
         1 * 10 ** 18
@@ -1538,6 +1552,7 @@ contract WorldMillionaireChallenge is Ownable2Step, Challenge {
             "WMC-DAYS",
             1,
             4,
+            60,
             3,
             3,
             1 * 10 ** 18
@@ -1621,6 +1636,13 @@ contract WorldMillionaireChallenge is Ownable2Step, Challenge {
 
         // The process was not started.
         if (block.number - proof[day].blkNumber > 255) {
+            if (day != 0) {
+                require(
+                    (block.timestamp - proof[day - 1].blkTime) >=
+                        data.minInterval,
+                    "Too often"
+                );
+            }
             proof[day].day = day;
             proof[day].blkNumber = block.number;
             proof[day].blkTime = block.timestamp;

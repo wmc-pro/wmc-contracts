@@ -1446,6 +1446,68 @@ abstract contract Challenge is Ownable2Step, DaysToken, ParticipantsStorage {
 }
 
 
+// Dependency file: contracts/utils/RecoverableErc20.sol
+
+// pragma solidity 0.8.21;
+
+// import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+// import "@openzeppelin/contracts/access/Ownable2Step.sol";
+
+/**
+ * @dev The contract is intendent to help recovering arbitrary ERC20 tokens and
+ * ETH accidentally transferred to the contract address
+ */
+abstract contract RecoverableErc20 is Ownable2Step {
+    event RecoveredFunds(
+        address indexed token,
+        uint256 amount,
+        address indexed recipient
+    );
+
+    function _getRecoverableAmount(
+        address token
+    ) internal view virtual returns (uint256) {
+        return IERC20(token).balanceOf(address(this));
+    }
+
+    /**
+     * @param token - ERC20 token's address to recover
+     * @param amount - to recover from contract's address
+     * @param recipient - address to receive tokens from the contract
+     */
+    function recoverFunds(
+        address token,
+        uint256 amount,
+        address recipient
+    ) external onlyOwner returns (bool) {
+        require(token != address(0), "Recoverable: token is zero");
+        uint256 recoverableAmount = _getRecoverableAmount(token);
+        require(
+            amount <= recoverableAmount,
+            "Recoverable: RECOVERABLE_AMOUNT_NOT_ENOUGH"
+        );
+        _transferErc20(token, amount, recipient);
+        emit RecoveredFunds(token, amount, recipient);
+        return true;
+    }
+
+    function _transferErc20(
+        address token,
+        uint256 amount,
+        address recipient
+    ) private {
+        // bytes4(keccak256(bytes('transfer(address,uint256)')));
+        (bool success, bytes memory data) = token.call(
+            abi.encodeWithSelector(0xa9059cbb, recipient, amount)
+        );
+        require(
+            success && (data.length == 0 || abi.decode(data, (bool))),
+            "Recoverable: TRANSFER_FAILED"
+        );
+    }
+}
+
+
 // Root file: contracts/WorldMillionaireChallenge.sol
 
 pragma solidity 0.8.21;
@@ -1454,14 +1516,26 @@ pragma solidity 0.8.21;
 // import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 // import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 // import "contracts/utils/Challenge.sol";
+// import "contracts/utils/RecoverableErc20.sol";
+// import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-contract WorldMillionaireChallenge is Ownable2Step, Challenge {
+contract WorldMillionaireChallenge is
+    Ownable2Step,
+    RecoverableErc20,
+    Challenge
+{
     using SafeERC20 for IERC20;
 
     IERC20 public immutable tokenUsdt;
     address public teamWallet;
     mapping(address => bool) public isDepositor;
     mapping(address => bool) public isDrawMaker;
+
+    struct AccountingData {
+        uint256 deposited;
+        uint256 withdrawn;
+    }
+    AccountingData public accounting;
 
     /**
      * @param day - Draw day number
@@ -1585,6 +1659,7 @@ contract WorldMillionaireChallenge is Ownable2Step, Challenge {
             numSeasons
         );
         tokenUsdt.safeTransferFrom(_msgSender(), address(this), usdtAmount);
+        _depositedUsdt(usdtAmount);
         emit Deposit(wallet, participantId, usdtAmount);
 
         // Add a participant to seasons
@@ -1606,16 +1681,18 @@ contract WorldMillionaireChallenge is Ownable2Step, Challenge {
             _getParticipantWinRewardsClaimed(wallet);
         if (winRew > 0) {
             _incParticipantWinRewardsClaimed(wallet, winRew);
-            emit WinRewardsClaimed(wallet, participantId, winRew);
             tokenUsdt.safeTransfer(wallet, winRew);
+            _withdrawnUsdt(winRew);
+            emit WinRewardsClaimed(wallet, participantId, winRew);
         }
 
         uint256 refRew = _getParticipantRefRewards(wallet) -
             _getParticipantRefRewardsClaimed(wallet);
         if (refRew > 0) {
             _incParticipantRefRewardsClaimed(wallet, refRew);
-            emit RefRewardsClaimed(wallet, participantId, refRew);
             tokenUsdt.safeTransfer(wallet, refRew);
+            _withdrawnUsdt(refRew);
+            emit RefRewardsClaimed(wallet, participantId, refRew);
         }
     }
 
@@ -1690,6 +1767,7 @@ contract WorldMillionaireChallenge is Ownable2Step, Challenge {
                 if (autoClaim) {
                     _incParticipantRefRewardsClaimed(refWallet, refRew);
                     tokenUsdt.safeTransfer(refWallet, refRew);
+                    _withdrawnUsdt(refRew);
                     emit RefRewardsClaimed(refWallet, refId, refRew);
                 }
             } else {
@@ -1703,6 +1781,7 @@ contract WorldMillionaireChallenge is Ownable2Step, Challenge {
                 _incParticipantRefRewardsClaimed(address(0), refRew);
                 emit RefRewardsAwarded(address(0), 0, day, winId, i, refRew);
                 tokenUsdt.safeTransfer(teamWallet, refRew);
+                _withdrawnUsdt(refRew);
                 emit RefRewardsClaimed(address(0), 0, refRew);
             }
             refWallet = _getParticipantReferrerWallet(refWallet);
@@ -1716,7 +1795,27 @@ contract WorldMillionaireChallenge is Ownable2Step, Challenge {
         if (autoClaim) {
             _incParticipantWinRewardsClaimed(winWallet, winRew);
             tokenUsdt.safeTransfer(winWallet, winRew);
+            _withdrawnUsdt(winRew);
             emit WinRewardsClaimed(winWallet, winId, winRew);
+        }
+    }
+
+    function _depositedUsdt(uint256 usdtAmount) private {
+        accounting.deposited += usdtAmount;
+    }
+
+    function _withdrawnUsdt(uint256 usdtAmount) private {
+        accounting.withdrawn += usdtAmount;
+    }
+
+    function _getRecoverableAmount(
+        address token
+    ) internal view override returns (uint256 recoverableAmount) {
+        recoverableAmount = IERC20(token).balanceOf(address(this));
+        if (token == address(tokenUsdt)) {
+            return
+                recoverableAmount -
+                (accounting.deposited - accounting.withdrawn);
         }
     }
 

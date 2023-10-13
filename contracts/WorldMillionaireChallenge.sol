@@ -5,14 +5,26 @@ import "@openzeppelin/contracts/access/Ownable2Step.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "./utils/Challenge.sol";
+import "./utils/RecoverableErc20.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-contract WorldMillionaireChallenge is Ownable2Step, Challenge {
+contract WorldMillionaireChallenge is
+    Ownable2Step,
+    RecoverableErc20,
+    Challenge
+{
     using SafeERC20 for IERC20;
 
     IERC20 public immutable tokenUsdt;
     address public teamWallet;
     mapping(address => bool) public isDepositor;
     mapping(address => bool) public isDrawMaker;
+
+    struct AccountingData {
+        uint256 deposited;
+        uint256 withdrawn;
+    }
+    AccountingData public accounting;
 
     /**
      * @param day - Draw day number
@@ -136,6 +148,7 @@ contract WorldMillionaireChallenge is Ownable2Step, Challenge {
             numSeasons
         );
         tokenUsdt.safeTransferFrom(_msgSender(), address(this), usdtAmount);
+        _incDepositedUsdt(usdtAmount);
         emit Deposit(wallet, participantId, usdtAmount);
 
         // Add a participant to seasons
@@ -156,17 +169,19 @@ contract WorldMillionaireChallenge is Ownable2Step, Challenge {
         uint256 winRew = _getParticipantWinRewards(wallet) -
             _getParticipantWinRewardsClaimed(wallet);
         if (winRew > 0) {
-            _incParticipantWinRewardsClaimed(wallet, winRew);
-            emit WinRewardsClaimed(wallet, participantId, winRew);
             tokenUsdt.safeTransfer(wallet, winRew);
+            _incParticipantWinRewardsClaimed(wallet, winRew);
+            _incWthdrawnUsdt(winRew);
+            emit WinRewardsClaimed(wallet, participantId, winRew);
         }
 
         uint256 refRew = _getParticipantRefRewards(wallet) -
             _getParticipantRefRewardsClaimed(wallet);
         if (refRew > 0) {
-            _incParticipantRefRewardsClaimed(wallet, refRew);
-            emit RefRewardsClaimed(wallet, participantId, refRew);
             tokenUsdt.safeTransfer(wallet, refRew);
+            _incParticipantRefRewardsClaimed(wallet, refRew);
+            _incWthdrawnUsdt(refRew);
+            emit RefRewardsClaimed(wallet, participantId, refRew);
         }
     }
 
@@ -239,8 +254,9 @@ contract WorldMillionaireChallenge is Ownable2Step, Challenge {
                 _incParticipantRefRewards(refWallet, refRew);
                 emit RefRewardsAwarded(refWallet, refId, day, winId, i, refRew);
                 if (autoClaim) {
-                    _incParticipantRefRewardsClaimed(refWallet, refRew);
                     tokenUsdt.safeTransfer(refWallet, refRew);
+                    _incParticipantRefRewardsClaimed(refWallet, refRew);
+                    _incWthdrawnUsdt(refRew);
                     emit RefRewardsClaimed(refWallet, refId, refRew);
                 }
             } else {
@@ -250,10 +266,11 @@ contract WorldMillionaireChallenge is Ownable2Step, Challenge {
                  */
                 emit RefRewardsMissed(refWallet, refId, day, winId, i, refRew);
 
-                _incParticipantRefRewards(address(0), refRew);
-                _incParticipantRefRewardsClaimed(address(0), refRew);
                 emit RefRewardsAwarded(address(0), 0, day, winId, i, refRew);
                 tokenUsdt.safeTransfer(teamWallet, refRew);
+                _incParticipantRefRewards(address(0), refRew);
+                _incParticipantRefRewardsClaimed(address(0), refRew);
+                _incWthdrawnUsdt(refRew);
                 emit RefRewardsClaimed(address(0), 0, refRew);
             }
             refWallet = _getParticipantReferrerWallet(refWallet);
@@ -265,9 +282,29 @@ contract WorldMillionaireChallenge is Ownable2Step, Challenge {
         emit WinRewardsAwarded(winWallet, winId, day, winRew);
 
         if (autoClaim) {
-            _incParticipantWinRewardsClaimed(winWallet, winRew);
             tokenUsdt.safeTransfer(winWallet, winRew);
+            _incParticipantWinRewardsClaimed(winWallet, winRew);
+            _incWthdrawnUsdt(winRew);
             emit WinRewardsClaimed(winWallet, winId, winRew);
+        }
+    }
+
+    function _incDepositedUsdt(uint256 usdtAmount) private {
+        accounting.deposited += usdtAmount;
+    }
+
+    function _incWthdrawnUsdt(uint256 usdtAmount) private {
+        accounting.withdrawn += usdtAmount;
+    }
+
+    function _getRecoverableAmount(
+        address token
+    ) internal view override returns (uint256 recoverableAmount) {
+        recoverableAmount = IERC20(token).balanceOf(address(this));
+        if (token == address(tokenUsdt)) {
+            return
+                recoverableAmount -
+                (accounting.deposited - accounting.withdrawn);
         }
     }
 

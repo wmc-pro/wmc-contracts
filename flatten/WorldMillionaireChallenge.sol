@@ -1625,7 +1625,7 @@ contract WorldMillionaireChallenge is
             "WMC.PRO Remaining Challenge Days",
             "WMC-DAYS",
             1,
-            4,
+            10,
             60,
             3,
             3,
@@ -1659,7 +1659,7 @@ contract WorldMillionaireChallenge is
             numSeasons
         );
         tokenUsdt.safeTransferFrom(_msgSender(), address(this), usdtAmount);
-        _depositedUsdt(usdtAmount);
+        _incDepositedUsdt(usdtAmount);
         emit Deposit(wallet, participantId, usdtAmount);
 
         // Add a participant to seasons
@@ -1680,19 +1680,13 @@ contract WorldMillionaireChallenge is
         uint256 winRew = _getParticipantWinRewards(wallet) -
             _getParticipantWinRewardsClaimed(wallet);
         if (winRew > 0) {
-            _incParticipantWinRewardsClaimed(wallet, winRew);
-            tokenUsdt.safeTransfer(wallet, winRew);
-            _withdrawnUsdt(winRew);
-            emit WinRewardsClaimed(wallet, participantId, winRew);
+            _sendWinRewards(wallet, participantId, winRew);
         }
 
         uint256 refRew = _getParticipantRefRewards(wallet) -
             _getParticipantRefRewardsClaimed(wallet);
         if (refRew > 0) {
-            _incParticipantRefRewardsClaimed(wallet, refRew);
-            tokenUsdt.safeTransfer(wallet, refRew);
-            _withdrawnUsdt(refRew);
-            emit RefRewardsClaimed(wallet, participantId, refRew);
+            _sendRefRewards(wallet, participantId, refRew);
         }
     }
 
@@ -1764,11 +1758,9 @@ contract WorldMillionaireChallenge is
             if (_isSeasonJoined(currentSeason, refWallet)) {
                 _incParticipantRefRewards(refWallet, refRew);
                 emit RefRewardsAwarded(refWallet, refId, day, winId, i, refRew);
+
                 if (autoClaim) {
-                    _incParticipantRefRewardsClaimed(refWallet, refRew);
-                    tokenUsdt.safeTransfer(refWallet, refRew);
-                    _withdrawnUsdt(refRew);
-                    emit RefRewardsClaimed(refWallet, refId, refRew);
+                    _sendRefRewards(refWallet, refId, refRew);
                 }
             } else {
                 /**
@@ -1778,11 +1770,9 @@ contract WorldMillionaireChallenge is
                 emit RefRewardsMissed(refWallet, refId, day, winId, i, refRew);
 
                 _incParticipantRefRewards(address(0), refRew);
-                _incParticipantRefRewardsClaimed(address(0), refRew);
                 emit RefRewardsAwarded(address(0), 0, day, winId, i, refRew);
-                tokenUsdt.safeTransfer(teamWallet, refRew);
-                _withdrawnUsdt(refRew);
-                emit RefRewardsClaimed(address(0), 0, refRew);
+
+                _sendMissedRefRewards(refRew);
             }
             refWallet = _getParticipantReferrerWallet(refWallet);
         }
@@ -1793,18 +1783,44 @@ contract WorldMillionaireChallenge is
         emit WinRewardsAwarded(winWallet, winId, day, winRew);
 
         if (autoClaim) {
-            _incParticipantWinRewardsClaimed(winWallet, winRew);
-            tokenUsdt.safeTransfer(winWallet, winRew);
-            _withdrawnUsdt(winRew);
-            emit WinRewardsClaimed(winWallet, winId, winRew);
+            _sendWinRewards(winWallet, winId, winRew);
         }
     }
 
-    function _depositedUsdt(uint256 usdtAmount) private {
+    function _sendWinRewards(
+        address wallet,
+        uint256 participantId,
+        uint256 amount
+    ) private {
+        tokenUsdt.safeTransfer(wallet, amount);
+        _incParticipantWinRewardsClaimed(wallet, amount);
+        _incWthdrawnUsdt(amount);
+        emit WinRewardsClaimed(wallet, participantId, amount);
+    }
+
+    function _sendRefRewards(
+        address wallet,
+        uint256 participantId,
+        uint256 amount
+    ) private {
+        tokenUsdt.safeTransfer(wallet, amount);
+        _incParticipantRefRewardsClaimed(wallet, amount);
+        _incWthdrawnUsdt(amount);
+        emit RefRewardsClaimed(wallet, participantId, amount);
+    }
+
+    function _sendMissedRefRewards(uint256 amount) private {
+        tokenUsdt.safeTransfer(teamWallet, amount);
+        _incParticipantRefRewardsClaimed(address(0), amount);
+        _incWthdrawnUsdt(amount);
+        emit RefRewardsClaimed(address(0), 0, amount);
+    }
+
+    function _incDepositedUsdt(uint256 usdtAmount) private {
         accounting.deposited += usdtAmount;
     }
 
-    function _withdrawnUsdt(uint256 usdtAmount) private {
+    function _incWthdrawnUsdt(uint256 usdtAmount) private {
         accounting.withdrawn += usdtAmount;
     }
 

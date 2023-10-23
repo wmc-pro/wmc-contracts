@@ -2,7 +2,7 @@
 > https://patorjk.com/software/taag/#p=display&f=ANSI%20Regular&t=World%0AMillionaire%0AChallenge
 
 ```bash
-                                                                               
+/*
 ██     ██  ██████  ██████  ██      ██████                                      
 ██     ██ ██    ██ ██   ██ ██      ██   ██                                     
 ██  █  ██ ██    ██ ██████  ██      ██   ██                                     
@@ -25,5 +25,5 @@
                                                                                
                                                                                
                                   www.wmc.pro                                  
-                                                                               
+*/
 ```

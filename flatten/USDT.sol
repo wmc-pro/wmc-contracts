@@ -508,7 +508,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
 
 // Root file: contracts/test/USDT.sol
 
-pragma solidity 0.8.21;
+pragma solidity 0.8.19;
 
 // import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 

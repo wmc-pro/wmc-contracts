@@ -3761,7 +3761,7 @@ abstract contract ERC20VotesUpgradeable is Initializable, ERC20PermitUpgradeable
 
 // Root file: contracts/WorldMillionaireChallengeToken.sol
 
-pragma solidity 0.8.21;
+pragma solidity 0.8.19;
 
 // import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 // import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";

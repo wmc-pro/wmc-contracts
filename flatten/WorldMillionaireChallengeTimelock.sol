@@ -1422,12 +1422,12 @@ contract TimelockController is AccessControl, IERC721Receiver, IERC1155Receiver 
 
 // Root file: contracts/WorldMillionaireChallengeTimelock.sol
 
-pragma solidity 0.8.21;
+pragma solidity 0.8.19;
 
 // import "@openzeppelin/contracts/governance/TimelockController.sol";
 
 contract WorldMillionaireChallengeTimelock is TimelockController {
-    uint256 private _minDelay = 60; // TODO seconds 3*24*60*60=259200
+    uint256 private _minDelay = 259200; // TODO seconds 3*24*60*60=259200
     // TODO Multisig wallet
     address[] private _proposers = [address(0)];
     address[] private _executors = [address(0)];

@@ -700,7 +700,7 @@ interface IERC2981Upgradeable is IERC165Upgradeable {
 
 // Root file: contracts/utils/MillionaireId.sol
 
-pragma solidity 0.8.21;
+pragma solidity 0.8.19;
 
 // import "@openzeppelin/contracts-upgradeable/utils/introspection/IERC165Upgradeable.sol";
 // import "@openzeppelin/contracts-upgradeable/token/ERC721/IERC721Upgradeable.sol";

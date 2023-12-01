@@ -711,7 +711,7 @@ library SafeERC20 {
 
 // Dependency file: contracts/interfaces/IRefTree.sol
 
-// pragma solidity 0.8.21;
+// pragma solidity 0.8.19;
 
 interface IRefTree {
     function getParticipantId(
@@ -749,7 +749,7 @@ interface IRefTree {
 
 // Dependency file: contracts/utils/ParticipantsStorage.sol
 
-// pragma solidity 0.8.21;
+// pragma solidity 0.8.19;
 
 // import "contracts/interfaces/IRefTree.sol";
 
@@ -953,7 +953,7 @@ interface IERC20Metadata is IERC20 {
 
 // Dependency file: contracts/utils/DaysToken.sol
 
-// pragma solidity 0.8.21;
+// pragma solidity 0.8.19;
 
 // import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 // import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
@@ -1056,7 +1056,7 @@ abstract contract DaysToken is Ownable2Step, IERC20, IERC20Metadata {
 
 // Dependency file: contracts/utils/Challenge.sol
 
-// pragma solidity 0.8.21;
+// pragma solidity 0.8.19;
 
 // import "@openzeppelin/contracts/access/Ownable2Step.sol";
 // import "contracts/utils/ParticipantsStorage.sol";
@@ -1448,7 +1448,7 @@ abstract contract Challenge is Ownable2Step, DaysToken, ParticipantsStorage {
 
 // Dependency file: contracts/utils/RecoverableErc20.sol
 
-// pragma solidity 0.8.21;
+// pragma solidity 0.8.19;
 
 // import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 // import "@openzeppelin/contracts/access/Ownable2Step.sol";
@@ -1510,7 +1510,7 @@ abstract contract RecoverableErc20 is Ownable2Step {
 
 // Root file: contracts/WorldMillionaireChallenge.sol
 
-pragma solidity 0.8.21;
+pragma solidity 0.8.19;
 
 // import "@openzeppelin/contracts/access/Ownable2Step.sol";
 // import "@openzeppelin/contracts/token/ERC20/IERC20.sol";

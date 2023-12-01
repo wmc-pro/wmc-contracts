@@ -1931,7 +1931,7 @@ library ECDSA {
 
 // Dependency file: contracts/utils/RecoverableErc20.sol
 
-// pragma solidity 0.8.21;
+// pragma solidity 0.8.19;
 
 // import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 // import "@openzeppelin/contracts/access/Ownable2Step.sol";
@@ -1993,7 +1993,7 @@ abstract contract RecoverableErc20 is Ownable2Step {
 
 // Dependency file: contracts/interfaces/IChallenge.sol
 
-// pragma solidity 0.8.21;
+// pragma solidity 0.8.19;
 
 interface IChallenge {
     function deposit(
@@ -2028,7 +2028,7 @@ interface IChallenge {
 
 // Root file: contracts/WorldMillionaireChallengeDepositor.sol
 
-pragma solidity 0.8.21;
+pragma solidity 0.8.19;
 
 // import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 // import "@openzeppelin/contracts/access/Ownable2Step.sol";

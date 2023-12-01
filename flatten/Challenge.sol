@@ -174,7 +174,7 @@ abstract contract Ownable2Step is Ownable {
 
 // Dependency file: contracts/interfaces/IRefTree.sol
 
-// pragma solidity 0.8.21;
+// pragma solidity 0.8.19;
 
 interface IRefTree {
     function getParticipantId(
@@ -212,7 +212,7 @@ interface IRefTree {
 
 // Dependency file: contracts/utils/ParticipantsStorage.sol
 
-// pragma solidity 0.8.21;
+// pragma solidity 0.8.19;
 
 // import "contracts/interfaces/IRefTree.sol";
 
@@ -497,7 +497,7 @@ interface IERC20Metadata is IERC20 {
 
 // Dependency file: contracts/utils/DaysToken.sol
 
-// pragma solidity 0.8.21;
+// pragma solidity 0.8.19;
 
 // import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 // import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
@@ -600,7 +600,7 @@ abstract contract DaysToken is Ownable2Step, IERC20, IERC20Metadata {
 
 // Root file: contracts/utils/Challenge.sol
 
-pragma solidity 0.8.21;
+pragma solidity 0.8.19;
 
 // import "@openzeppelin/contracts/access/Ownable2Step.sol";
 // import "contracts/utils/ParticipantsStorage.sol";

@@ -1105,7 +1105,7 @@ library StringsUpgradeable {
 
 // Dependency file: contracts/interfaces/IChallenge.sol
 
-// pragma solidity 0.8.21;
+// pragma solidity 0.8.19;
 
 interface IChallenge {
     function deposit(
@@ -1140,7 +1140,7 @@ interface IChallenge {
 
 // Dependency file: contracts/interfaces/INftDescriptor.sol
 
-// pragma solidity 0.8.21;
+// pragma solidity 0.8.19;
 
 interface INftDescriptor {
     function contractURI() external view returns (string memory);
@@ -1151,7 +1151,7 @@ interface INftDescriptor {
 
 // Root file: contracts/WorldMillionaireChallengeIdDescriptor.sol
 
-pragma solidity 0.8.21;
+pragma solidity 0.8.19;
 
 // import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 // import "@openzeppelin/contracts-upgradeable/access/Ownable2StepUpgradeable.sol";

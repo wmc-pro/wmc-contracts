@@ -255,7 +255,7 @@ abstract contract Ownable2Step is Ownable {
 
 // Root file: contracts/utils/RecoverableErc20.sol
 
-pragma solidity 0.8.21;
+pragma solidity 0.8.19;
 
 // import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 // import "@openzeppelin/contracts/access/Ownable2Step.sol";

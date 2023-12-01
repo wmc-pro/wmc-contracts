@@ -92,18 +92,6 @@ contract WorldMillionaireChallenge is
         uint256 amount
     );
 
-    /*
-    Challenge(
-        refTree_,
-        "WMC.PRO Remaining Challenge Days",
-        "WMC-DAYS",
-        1,
-        4,
-        85500, // TODO 23:45 = 24*60*60-15*60 = 85500
-        100_000, // TODO
-        90, // TODO
-        1 * 10 ** 18
-    )*/
     constructor(
         address tokenUsdt_,
         address refTree_,
@@ -114,10 +102,10 @@ contract WorldMillionaireChallenge is
             "WMC.PRO Remaining Challenge Days",
             "WMC-DAYS",
             1,
-            10,
-            60,
-            3,
-            3,
+            4,
+            85500,
+            100_000,
+            90,
             1 * 10 ** 18
         )
     {

@@ -1608,12 +1608,12 @@ contract WorldMillionaireChallenge is
         refTree_,
         "WMC.PRO Remaining Challenge Days",
         "WMC-DAYS",
-        1,
-        4,
-        85500, // TODO 23:45 = 24*60*60-15*60 = 85500
-        100_000, // TODO
-        90, // TODO
-        1 * 10 ** 18
+        1, // min seasons
+        4, // max seasons
+        85500, // min time between draws
+        100_000, // Number of participants to start
+        90, // season days
+        1 * 10 ** 18 // day price
     )*/
     constructor(
         address tokenUsdt_,
@@ -1625,10 +1625,10 @@ contract WorldMillionaireChallenge is
             "WMC.PRO Remaining Challenge Days",
             "WMC-DAYS",
             1,
-            10,
-            60,
-            3,
-            3,
+            4,
+            85500,
+            100_000,
+            90,
             1 * 10 ** 18
         )
     {

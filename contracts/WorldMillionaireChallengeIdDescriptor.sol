@@ -61,8 +61,8 @@ contract WorldMillionaireChallengeIdDescriptor is
 
     function initialize() public initializer {
         __Ownable2Step_init();
-        wmcId = IWmcId(address(0)); // TODO
-        challenge = IChallenge(address(0)); // TODO
+        wmcId = IWmcId(0x818f55201bC137564E1BE101e32c5acCED804276); // TODO
+        challenge = IChallenge(0x4F6b791e4822b2295ED61643fc6Cf65DC76665a6); // TODO
     }
 
     function version() external view returns (uint8) {

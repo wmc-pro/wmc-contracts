@@ -92,6 +92,18 @@ contract WorldMillionaireChallenge is
         uint256 amount
     );
 
+    /*
+    Challenge(
+        refTree_,
+        "WMC.PRO Remaining Challenge Days",
+        "WMC-DAYS",
+        1, // min seasons
+        4, // max seasons
+        85500, // min time between draws
+        100_000, // Number of participants to start
+        90, // season days
+        1 * 10 ** 18 // day price
+    )*/
     constructor(
         address tokenUsdt_,
         address refTree_,

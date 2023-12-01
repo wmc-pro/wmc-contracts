@@ -115,7 +115,7 @@ contract WorldMillionaireChallenge is
             "WMC-DAYS",
             1,
             400,
-            60,
+            45,
             3,
             90,
             1 * 10 ** 18

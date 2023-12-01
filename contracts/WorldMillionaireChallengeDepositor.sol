@@ -47,7 +47,7 @@ contract WorldMillionaireChallengeDepositor is
         bool autoWithdrawal_
     ) {
         chainId = block.chainid;
-        seasonDays = 3; // TODO 90
+        seasonDays = 90;
         seasonFees = 3 * 10 ** 18;
 
         tokenUsdt = IERC20(tokenUsdt_);

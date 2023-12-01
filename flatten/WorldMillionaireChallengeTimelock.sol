@@ -1427,9 +1427,10 @@ pragma solidity 0.8.19;
 // import "@openzeppelin/contracts/governance/TimelockController.sol";
 
 contract WorldMillionaireChallengeTimelock is TimelockController {
-    uint256 private _minDelay = 259200;
-    address[] private _proposers = [0x01B41030c1d98D356827204C0Fdb19fFBaeEb6b3];
-    address[] private _executors = [0x01B41030c1d98D356827204C0Fdb19fFBaeEb6b3];
+    uint256 private _minDelay = 60; // TODO seconds 3*24*60*60=259200
+    // TODO Multisig wallet
+    address[] private _proposers = [address(0)];
+    address[] private _executors = [address(0)];
 
     address private _admin = address(0);
 

@@ -172,10 +172,10 @@ contract WorldMillionaireChallengeIdDescriptor is
                     tokenImageData[0],
                     '"/></pattern><linearGradient id="B" x1="15" y1="-1.368" x2="81.805" y2="81.575" gradientUnits="userSpaceOnUse"><stop stop-color="#1c1c1c"/><stop offset=".515" stop-color="#fff"/><stop offset="1" stop-color="#303030"/></linearGradient></defs><rect x=".5" y=".5" width="161" height="257" rx="11.5" fill="#020202"/><rect x="4" y="4" width="154" height="192" rx="9" fill="url(#A)"/><g class="B F"><rect x="14.5" y="178" width="132" height="20" rx="10"/><rect x="14.5" y="202" width="132" height="20" rx="10"/><rect x="14.5" y="226" width="132" height="20" rx="10"/></g><text x="50%" y="17.5" fill="url(#B)" font-weight="700" font-size="9.15" class="C H I">World Millionare Challenge</text><text x="50%" y="33" font-size="7.35" class="B C D H I">Millionare ID</text><text x="38" y="192" class="B C D E G">ID:</text><text x="57" y="192" class="B C D E">',
                     tokenId.toString(),
-                    '</text><text x="21" y="216" class="B C D E G">Wins:</text><text x="57" y="216" class="B C D E">',
-                    wins.toString(),
-                    '</text><text x="23" y="240" class="B C D E G">Won:</text><text x="57" y="240" class="B C D E">$',
+                    '</text><text x="21" y="216" class="B C D E G">Won:</text><text x="57" y="216" class="B C D E">$',
                     (won / 10 ** 18).toString(),
+                    '</text><text x="23" y="240" class="B C D E G">Wins:</text><text x="57" y="240" class="B C D E">',
+                    wins.toString(),
                     "</text></svg>"
                 )
             );

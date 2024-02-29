@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.19;
 
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/access/Ownable2Step.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
@@ -108,10 +107,6 @@ contract WorldMillionaireChallengeDepositor is
             usdtAmount + usdtFees
         );
 
-        // Make deposit
-        tokenUsdt.safeApprove(address(challenge), usdtAmount);
-        challenge.deposit(_msgSender(), numSeasons, referrerId);
-
         // Send fees
         emit Fees(_msgSender(), address(this), usdtFees);
         if (autoWithdrawal) {
@@ -120,6 +115,10 @@ contract WorldMillionaireChallengeDepositor is
                 tokenUsdt.balanceOf(address(this))
             );
         }
+
+        // Make deposit
+        tokenUsdt.safeApprove(address(challenge), usdtAmount);
+        challenge.deposit(_msgSender(), numSeasons, referrerId);
     }
 
     function pause(bool status) external onlyOwner {

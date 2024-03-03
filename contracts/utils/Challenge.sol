@@ -40,7 +40,7 @@ abstract contract Challenge is Ownable2Step, DaysToken, ParticipantsStorage {
     event SeasonsMaxLimitChanged(uint256 oldValue, uint256 newValue);
     event MinIntervalChanged(uint256 oldValue, uint256 newValue);
     event RequirementChanged(uint256 oldValue, uint256 newValue);
-    event ParticipantJoinedtoSeason(
+    event ParticipantJoinedToSeason(
         address indexed participantWallet,
         uint256 indexed participantId,
         uint256 indexed seasonId
